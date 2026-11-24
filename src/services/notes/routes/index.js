@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import validate from '../../../middlewares/validate.js';
+import asyncHandler from '../../../utils/async-handler.js';
+import { noteSchema } from '../validators.js';
+import { createNote, getNotes, getNoteById, editNoteById, deleteNoteById } from '../controller/note-controller.js';
+const router = Router();
+router.post('/', validate(noteSchema), asyncHandler(createNote));
+router.get('/', asyncHandler(getNotes));
+router.get('/:id', asyncHandler(getNoteById));
+router.put('/:id', validate(noteSchema), asyncHandler(editNoteById));
+router.delete('/:id', asyncHandler(deleteNoteById));
+export default router;
