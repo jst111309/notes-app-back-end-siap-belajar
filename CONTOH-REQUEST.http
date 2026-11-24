@@ -1,0 +1,22 @@
+@baseUrl = http://127.0.0.1:3000
+
+### Tes server
+GET {{baseUrl}}/
+
+### Buat notes
+POST {{baseUrl}}/notes
+Content-Type: application/json
+
+{"title":"Catatan Pertama","body":"Belajar CRUD PostgreSQL","tags":["belajar"]}
+
+### Ambil semua notes
+GET {{baseUrl}}/notes
+
+### Registrasi (bonus)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{"username":"andi123","password":"passwordRahasia123","fullname":"Andi Saputra"}
+
+### Untuk GET/PUT/DELETE per ID, ganti ID sesuai respons POST /notes
+GET {{baseUrl}}/notes/ISI_ID_DI_SINI
