@@ -14,3 +14,6 @@ export class NotFoundError extends ClientError {
 export class ConflictError extends ClientError {
   constructor(message) { super(message, 409); }
 }
+export class AuthenticationError extends ClientError {
+  constructor(message) { super(message, 401); }
+}
