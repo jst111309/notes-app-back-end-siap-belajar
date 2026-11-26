@@ -27,6 +27,23 @@ class UserRepositories {
     });
     return result.rowCount > 0;
   }
+  async verifyUserCredential(username, password) {
+    const result = await this.pool.query({
+      text: 'SELECT id, password FROM users WHERE username = $1',
+      values: [username],
+    });
+    if (!result.rows.length) {
+      return null;
+    }
+
+    const { id, password: hashedPassword } = result.rows[0];
+    const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
+    if (!isPasswordMatch) {
+      return null;
+    }
+
+    return id;
+  }
   async getUserById(id) {
     const result = await this.pool.query({
       text: 'SELECT id, username, fullname FROM users WHERE id = $1',
