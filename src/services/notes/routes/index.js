@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import validate from '../../../middlewares/validate.js';
+import authenticateToken from '../../../middlewares/auth.js';
 import asyncHandler from '../../../utils/async-handler.js';
 import { noteSchema } from '../validators.js';
 import { createNote, getNotes, getNoteById, editNoteById, deleteNoteById } from '../controller/note-controller.js';
 const router = Router();
-router.post('/', validate(noteSchema), asyncHandler(createNote));
-router.get('/', asyncHandler(getNotes));
-router.get('/:id', asyncHandler(getNoteById));
-router.put('/:id', validate(noteSchema), asyncHandler(editNoteById));
-router.delete('/:id', asyncHandler(deleteNoteById));
+router.post('/', authenticateToken, validate(noteSchema), asyncHandler(createNote));
+router.get('/', authenticateToken, asyncHandler(getNotes));
+router.get('/:id', authenticateToken, asyncHandler(getNoteById));
+router.put('/:id', authenticateToken, validate(noteSchema), asyncHandler(editNoteById));
+router.delete('/:id', authenticateToken, asyncHandler(deleteNoteById));
 export default router;

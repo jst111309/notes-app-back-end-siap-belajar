@@ -17,3 +17,6 @@ export class ConflictError extends ClientError {
 export class AuthenticationError extends ClientError {
   constructor(message) { super(message, 401); }
 }
+export class AuthorizationError extends ClientError {
+  constructor(message) { super(message, 403); }
+}

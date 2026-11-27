@@ -4,26 +4,45 @@ import pool from '../../../database/pool.js';
 class NoteRepositories {
   constructor() { this.pool = pool; }
 
-  async createNote({ title, body, tags }) {
+  async createNote({ title, body, tags, owner }) {
     const id = `note-${nanoid(16)}`;
     const now = new Date().toISOString();
     const query = {
-      text: `INSERT INTO notes (id, title, body, tags, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      values: [id, title, body, tags, now, now],
+      text: `INSERT INTO notes (id, title, body, tags, created_at, updated_at, owner)
+             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      values: [id, title, body, tags, now, now, owner],
     };
     const result = await this.pool.query(query);
     return result.rows[0];
   }
 
-  async getNotes() {
-    const result = await this.pool.query('SELECT * FROM notes ORDER BY created_at DESC');
+  async getNotes(owner) {
+    const result = await this.pool.query({
+      text: 'SELECT * FROM notes WHERE owner = $1 ORDER BY created_at DESC',
+      values: [owner],
+    });
     return result.rows;
   }
 
   async getNoteById(id) {
     const result = await this.pool.query({ text: 'SELECT * FROM notes WHERE id = $1', values: [id] });
     return result.rows[0];
+  }
+
+  async verifyNoteOwner(id, owner) {
+    const query = {
+      text: 'SELECT * FROM notes WHERE id = $1',
+      values: [id],
+    };
+    const result = await this.pool.query(query);
+    if (!result.rows.length) {
+      return null;
+    }
+    const note = result.rows[0];
+    if (note.owner !== owner) {
+      return null;
+    }
+    return note;
   }
 
   async editNote({ id, title, body, tags }) {
