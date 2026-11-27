@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { InvariantError } from '../exceptions/index.js';
+import { InvariantError, AuthenticationError } from '../exceptions/index.js';
 
 const TokenManager = {
   generateAccessToken: (payload) => jwt.sign(payload, process.env.ACCESS_TOKEN_KEY),
@@ -10,6 +10,14 @@ const TokenManager = {
       return payload;
     } catch (error) {
       throw new InvariantError('Refresh token tidak valid');
+    }
+  },
+  verify: (accessToken, secret) => {
+    try {
+      const payload = jwt.verify(accessToken, secret);
+      return payload;
+    } catch (error) {
+      throw new AuthenticationError('Access token tidak valid');
     }
   },
 };
